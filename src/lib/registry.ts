@@ -8,7 +8,6 @@ export default function createRegistry(
   apiKey: Partial<Record<Provider, string>>
 ) {
   return createProviderRegistry({
-    // register provider with prefix and default setup:
     anthropic: createAnthropic({
       apiKey: apiKey.anthropic ?? '',
     }),
@@ -17,7 +16,6 @@ export default function createRegistry(
       apiKey: apiKey.deepseek ?? '',
     }),
 
-    // register provider with prefix and custom setup:
     openai: createOpenAI({
       apiKey: apiKey.openai ?? '',
     }),

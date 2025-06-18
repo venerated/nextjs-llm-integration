@@ -2,12 +2,6 @@
 
 import { PropsWithChildren, useEffect, useRef } from 'react'
 
-type ModalProps = {
-  className?: string
-  open: boolean // driven by parent state
-  onClose(): void // called on ⎋ or backdrop click
-}
-
 /**
  * Native-API modal:
  * – Primary path: <div popover> + showPopover/hidePopover
@@ -19,18 +13,20 @@ export default function Modal({
   open,
   onClose,
   children,
-}: PropsWithChildren<ModalProps>) {
-  // popover & dialog share enough to treat as HTMLElement
+}: PropsWithChildren<{
+  className?: string
+  open: boolean
+  onClose(): void
+}>) {
   const nodeRef = useRef<HTMLDivElement>(null)
 
-  // sync `open` prop with underlying element
   useEffect(() => {
     const $el = nodeRef.current
     if (!$el) return
 
     const withViewTransition = (fn: () => void) => {
       if (document.startViewTransition) {
-        document.startViewTransition(fn) // smooth fade/cross-fade
+        document.startViewTransition(fn)
       } else fn()
     }
 
@@ -45,14 +41,12 @@ export default function Modal({
     }
   }, [open])
 
-  // close on Esc / backdrop
   useEffect(() => {
     const $el = nodeRef.current
     if (!$el) return
 
     const handleKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     const handleClick = (e: MouseEvent) => {
-      // click outside content (in ::backdrop)
       if (e.target === $el) onClose()
     }
 

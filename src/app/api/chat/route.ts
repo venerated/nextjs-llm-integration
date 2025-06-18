@@ -35,29 +35,7 @@ export async function POST(req: Request) {
         execute: (dataStream) => {
           const result = streamText({
             model: languageModel,
-            // system: systemPrompt({ selectedChatModel, requestHints }),
             messages,
-            // maxSteps: 5,
-            // experimental_activeTools:
-            //   selectedChatModel === 'chat-model-reasoning'
-            //     ? []
-            //     : [
-            //         'getWeather',
-            //         'createDocument',
-            //         'updateDocument',
-            //         'requestSuggestions',
-            //       ],
-            // experimental_transform: smoothStream({ chunking: 'word' }),
-            // experimental_generateMessageId: generateUUID,
-            // tools: {
-            //   getWeather,
-            //   createDocument: createDocument({ session, dataStream }),
-            //   updateDocument: updateDocument({ session, dataStream }),
-            //   requestSuggestions: requestSuggestions({
-            //     session,
-            //     dataStream,
-            //   }),
-            // },
             onChunk() {
               if (!sentMeta) {
                 dataStream.writeMessageAnnotation({
@@ -67,46 +45,6 @@ export async function POST(req: Request) {
                 sentMeta = true
               }
             },
-            // onFinish: async () => {
-            //   if (session.user?.id) {
-            //     try {
-            //       const assistantId = getTrailingMessageId({
-            //         messages: response.messages.filter(
-            //           (message) => message.role === 'assistant',
-            //         ),
-            //       });
-
-            //       if (!assistantId) {
-            //         throw new Error('No assistant message found!');
-            //       }
-
-            //       const [, assistantMessage] = appendResponseMessages({
-            //         messages: [message],
-            //         responseMessages: response.messages,
-            //       });
-
-            //       await saveMessages({
-            //         messages: [
-            //           {
-            //             id: assistantId,
-            //             chatId: id,
-            //             role: assistantMessage.role,
-            //             parts: assistantMessage.parts,
-            //             attachments:
-            //               assistantMessage.experimental_attachments ?? [],
-            //             createdAt: new Date(),
-            //           },
-            //         ],
-            //       });
-            //     } catch (_) {
-            //       console.error('Failed to save chat');
-            //     }
-            //   }
-            // },
-            // experimental_telemetry: {
-            //   isEnabled: isProductionEnvironment,
-            //   functionId: 'stream-text',
-            // },
           })
 
           result.mergeIntoDataStream(dataStream, {
@@ -128,14 +66,6 @@ export async function POST(req: Request) {
           }
 
           return JSON.stringify(e)
-          // {
-          //   cause: undefined,
-          //   url: 'https://api.deepseek.com/v1/chat/completions',
-          //   requestBodyValues: [Object],
-          //   statusCode: 402,
-          //   responseHeaders: [Object],
-          //   responseBody: '{"error":{"message":"Insufficient Balance","type":"unknown_error","param":null,"code":"invalid_request_error"}}',
-          //   isRetryable: false,
         },
       })
 
