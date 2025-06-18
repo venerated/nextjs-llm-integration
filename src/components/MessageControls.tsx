@@ -4,7 +4,7 @@ import Button from '@/components/Button'
 import ProviderIcon from '@/components/ProviderIcon'
 import { Model, type Provider } from '@/lib/providers'
 
-import { type AnnotatedMessage } from '@/components/ChatBox'
+import { type AnnotatedMessage } from '@/types/message'
 
 export default function MessageControls({
   onDeleteMessage,

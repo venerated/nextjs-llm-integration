@@ -4,7 +4,7 @@ import MessageControls from '@/components/MessageControls'
 import Textarea from '@/components/Textarea'
 
 import { type UseChatHelpers } from '@ai-sdk/react'
-import { type AnnotatedMessage } from '@/components/ChatBox'
+import { type AnnotatedMessage } from '@/types/message'
 
 export default function Message({
   message,

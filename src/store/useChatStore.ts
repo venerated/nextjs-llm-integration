@@ -1,6 +1,8 @@
 'use client'
 
-import { AnnotatedMessage } from '@/components/ChatBox'
+import { create } from 'zustand'
+import { createJSONStorage, persist } from 'zustand/middleware'
+
 import {
   DEFAULT_MODEL,
   DEFAULT_PROVIDER,
@@ -8,8 +10,8 @@ import {
   Provider,
   ProviderWithKey,
 } from '@/lib/providers'
-import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware'
+
+import { type AnnotatedMessage } from '@/types/message'
 
 type State = {
   apiKeys: ProviderWithKey[]

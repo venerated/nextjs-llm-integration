@@ -1,10 +1,68 @@
 import { createDataStream, streamText, UIMessage } from 'ai'
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
+
 import createRegistry from '@/lib/registry'
 
-import { ProviderWithKey, type Provider } from '@/lib/providers'
-import { NextResponse } from 'next/server'
+import {
+  providerConfig,
+  providers,
+  type ProviderWithKey,
+  type Provider,
+} from '@/lib/providers'
+import { type AnnotatedMessage } from '@/types/message'
+
+const ProviderSchema = z.enum(
+  providers as [
+    keyof typeof providerConfig,
+    ...Array<keyof typeof providerConfig>,
+  ]
+)
+
+const TextUIPartSchema = z.object({
+  type: z.literal('text'),
+  text: z.string(),
+})
+
+const StepStartUIPart = z.object({
+  type: z.literal('step-start'),
+})
+
+const UIPartSchema = z.union([TextUIPartSchema, StepStartUIPart])
+
+const ChatRequestSchema = z.object({
+  id: z.string(),
+  messages: z.array(
+    z.object({
+      content: z.string(),
+      createdAt: z.preprocess((val) => new Date(val as string), z.date()),
+      id: z.string(),
+      parts: z.array(UIPartSchema),
+      role: z.enum(['user', 'assistant']),
+    })
+  ),
+  provider: ProviderSchema,
+  model: z.string(),
+  apiKeys: z.array(
+    z.object({
+      provider: ProviderSchema,
+      apiKey: z.string().optional(),
+    })
+  ),
+})
 
 export async function POST(req: Request) {
+  const body = await req.json()
+
+  console.log(body?.messages?.map((message: AnnotatedMessage) => message.parts))
+
+  const result = ChatRequestSchema.safeParse(body)
+  if (!result.success) {
+    return new Response(JSON.stringify({ error: 'Invalid request payload' }), {
+      status: 400,
+    })
+  }
+
   const {
     apiKeys,
     messages,
@@ -15,7 +73,7 @@ export async function POST(req: Request) {
     messages: UIMessage[]
     model: string
     provider: Provider
-  } = await req.json()
+  } = result.data
 
   const providerApiKey = apiKeys.find(
     (apiKey) => apiKey.provider == provider
@@ -52,17 +110,25 @@ export async function POST(req: Request) {
           })
         },
         onError: (e) => {
-          console.log('Error from /api/chat', e)
-          if (e == null) {
-            return 'unknown error'
-          }
+          console.error('Error from /api/chat', e)
 
-          if (typeof e === 'string') {
-            return e
+          if (
+            typeof e === 'object' &&
+            e !== null &&
+            'statusCode' in e &&
+            'responseBody' in e
+          ) {
+            const status = (e as any).statusCode ?? 500
+            const body = (e as any).responseBody ?? 'Unknown response body'
+            return `${status} — ${body}`
           }
 
           if (e instanceof Error) {
             return e.message
+          }
+
+          if (typeof e === 'string') {
+            return e
           }
 
           return JSON.stringify(e)
@@ -70,8 +136,31 @@ export async function POST(req: Request) {
       })
 
       return new Response(stream)
-    } catch (e) {
-      return NextResponse.json({ error: e }, { status: 400 })
+    } catch (e: unknown) {
+      console.error('Caught error:', e)
+
+      if (
+        typeof e === 'object' &&
+        e !== null &&
+        'statusCode' in e &&
+        'responseBody' in e
+      ) {
+        const status = (e as any).statusCode ?? 500
+        const body = (e as any).responseBody ?? 'Unknown response body'
+
+        return NextResponse.json({ error: body }, { status })
+      }
+
+      if (e instanceof Error) {
+        console.error('Error.message:', e.message)
+        console.error('Error.name:', e.name)
+        console.error('Error.stack:', e.stack)
+      }
+
+      return NextResponse.json(
+        { error: 'Unexpected server error' },
+        { status: 500 }
+      )
     }
   }
 

@@ -17,7 +17,10 @@ export const providerConfig = {
 export type Provider = keyof typeof providerConfig
 
 // List of provider keys
-export const providers = Object.keys(providerConfig) as Provider[]
+
+export const providers = Object.keys(providerConfig) as Array<
+  keyof typeof providerConfig
+>
 
 // Map each provider to its array of models
 export const models = Object.fromEntries(
@@ -30,7 +33,7 @@ export const providerDisplayNames = providers.map((key) => ({
   displayName: providerConfig[key].displayName,
 }))
 
-export type ProviderWithKey = { provider: Provider; apiKey: string }
+export type ProviderWithKey = { provider: Provider; apiKey?: string }
 
 export type Model =
   (typeof providerConfig)[keyof typeof providerConfig]['models'][number]

@@ -9,7 +9,7 @@ import { useScrollToElement } from '@/hooks/useScrollToElement'
 
 import { type UIMessage } from 'ai'
 import { type UseChatHelpers } from '@ai-sdk/react'
-import { type AnnotatedMessage } from '@/components/ChatBox'
+import { type AnnotatedMessage } from '@/types/message'
 
 export default function Messages({
   error,

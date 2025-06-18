@@ -7,33 +7,7 @@ import ChatInput from '@/components/ChatInput'
 import Messages from '@/components/Messages'
 import { useChatStore } from '@/store/useChatStore'
 
-import { type UIMessage } from 'ai'
-import { type Model, type Provider } from '@/lib/providers'
-
-export type Annotations = { provider: Provider; model: Model }
-
-export type AnnotatedMessage = UIMessage & {
-  annotations?: Annotations[] | undefined
-}
-
-export type AnnotatedUIMessage = UIMessage & {
-  annotations?: Annotations[] | undefined
-}
-
-function convertToUIMessages(
-  messages: AnnotatedMessage[]
-): AnnotatedUIMessage[] {
-  return messages.map((message) => ({
-    annotations: message.annotations,
-    // Note: content will soon be deprecated in @ai-sdk/react
-    // this is left here because useChat requires it for now
-    content: '',
-    createdAt: message.createdAt,
-    id: message.id,
-    parts: message.parts as UIMessage['parts'],
-    role: message.role as UIMessage['role'],
-  }))
-}
+import { type AnnotatedMessage } from '@/types/message'
 
 export default function ChatBox() {
   const {
@@ -55,7 +29,7 @@ export default function ChatBox() {
     setMessages,
     stop,
   } = useChat({
-    initialMessages: convertToUIMessages(storeMessages),
+    initialMessages: storeMessages,
     body: { provider, model, apiKeys },
     sendExtraMessageFields: true,
   }) as ReturnType<typeof useChat> & {

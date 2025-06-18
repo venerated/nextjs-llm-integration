@@ -11,6 +11,7 @@ export function useScrollToElement<T extends HTMLElement = HTMLDivElement>(
   const prevWatchedValue = useRef<number>(watchedValue)
 
   useEffect(() => {
+    let isMounted = true
     const valueHasChanged = watchedValue > prevWatchedValue.current
 
     if (valueHasChanged || !isIdle) {
@@ -19,7 +20,11 @@ export function useScrollToElement<T extends HTMLElement = HTMLDivElement>(
       }
 
       scrollRef.current = requestAnimationFrame(() => {
-        scrollPositionWatcherRef.current?.scrollIntoView({ behavior: 'smooth' })
+        if (isMounted) {
+          scrollPositionWatcherRef.current?.scrollIntoView({
+            behavior: 'smooth',
+          })
+        }
         scrollRef.current = null
       })
     }
@@ -27,6 +32,7 @@ export function useScrollToElement<T extends HTMLElement = HTMLDivElement>(
     prevWatchedValue.current = watchedValue
 
     return () => {
+      isMounted = false
       if (scrollRef.current !== null) cancelAnimationFrame(scrollRef.current)
     }
   }, [watchedValue, isIdle])
