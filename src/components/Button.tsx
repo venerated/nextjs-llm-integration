@@ -18,27 +18,22 @@ export default function Button({
   onClick?: () => void
   size?: 'small' | 'medium'
   target?: '_self' | '_blank' | string | null | undefined
-  variant?: 'primary' | 'ghost'
+  variant?: 'primary' | 'ghost' | 'warning'
   type?: 'button' | 'submit'
 }) {
   const rel = target === '_blank' ? 'noopener noreferrer' : undefined
 
   const commonStyles = tw`grid cursor-pointer place-content-center rounded-full text-sm font-medium transition-colors sm:w-auto sm:text-base`
 
-  // Variants
-  const primaryStyles = tw`bg-neutral-500 text-neutral-300 hover:bg-neutral-600`
-  const ghostStyles = tw`grid min-h-[40px] min-w-[40px] cursor-pointer place-content-center sm:min-w-0`
   const variants = {
-    primary: primaryStyles,
-    ghost: ghostStyles,
+    primary: tw`bg-neutral-500 text-neutral-300 hover:bg-neutral-600`,
+    ghost: tw`grid min-h-[40px] min-w-[40px] cursor-pointer place-content-center sm:min-w-0`,
+    warning: tw`bg-red-800`,
   }
 
-  // Sizes
-  const smallStyles = tw`h-8 px-2 sm:h-10 sm:px-3`
-  const mediumStyles = tw`h-10 px-4 sm:h-12 sm:px-5`
   const sizes = {
-    small: smallStyles,
-    medium: mediumStyles,
+    small: tw`h-8 px-2 sm:h-10 sm:px-3`,
+    medium: tw`h-10 px-4 sm:h-12 sm:px-5`,
   }
 
   let styles = `${commonStyles} ${variants[variant]} ${sizes[size]}`

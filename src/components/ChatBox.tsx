@@ -6,17 +6,15 @@ import { useEffect, useRef } from 'react'
 import ChatInput from '@/components/ChatInput'
 import Messages from '@/components/Messages'
 import { useChatStore } from '@/store/useChatStore'
+import { useSettingsStore } from '@/store/useSettingsStore'
 
-import { type AnnotatedMessage } from '@/types/message'
+import type { AnnotatedMessage } from '@/types/message'
 
 export default function ChatBox() {
-  const {
-    apiKeys,
-    messages: storeMessages,
-    model,
-    provider,
-    setMessages: setStoreMessages,
-  } = useChatStore()
+  const { messages: storeMessages, setMessages: setStoreMessages } =
+    useChatStore()
+
+  const { apiKeys, model, provider } = useSettingsStore()
 
   const {
     error,
@@ -62,13 +60,14 @@ export default function ChatBox() {
         reload={reload}
         mutateMessages={mutateMessages}
       />
-      <div className="m-auto w-full px-4 pb-8 sm:w-75/100">
+      <div className="m-auto w-full max-w-[75ch] px-4 pb-8 sm:w-75/100">
         <ChatInput
           input={input}
           status={status}
           stop={stop}
           onHandleInputChange={handleInputChange}
           onHandleSubmit={handleSubmit}
+          mutateMessages={mutateMessages}
         />
       </div>
     </div>

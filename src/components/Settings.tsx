@@ -1,33 +1,33 @@
 import React from 'react'
 
+import Button from '@/components/Button'
 import Input from '@/components/Input'
 import Select from '@/components/Select'
 import {
   DEFAULT_PROVIDER,
   DEFAULT_MODEL,
-  models,
-  providers,
-  providerConfig,
-  providerDisplayNames,
-  type Model,
-  type Provider,
-} from '@/lib/providers'
-import { useChatStore } from '@/store/useChatStore'
+  MODELS,
+  PROVIDERS,
+  PROVIDER_CONFIG,
+  getProviderDisplayName,
+} from '@/lib/provider'
+import { useSettingsStore } from '@/store/useSettingsStore'
 
-export default function Settings() {
+import type { Model, Provider } from '@/types/provider'
+
+export default function Settings({ onClearChat }: { onClearChat: () => void }) {
   const { apiKeys, model, provider, setApiKeys, setModel, setProvider } =
-    useChatStore()
+    useSettingsStore()
 
   const handleProviderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = (e?.target?.value ?? DEFAULT_PROVIDER) as Provider
-    setProvider(providers.includes(value) ? value : DEFAULT_PROVIDER)
-    setModel(providerConfig[value]?.models?.[0])
+    setProvider(PROVIDERS.includes(value) ? value : DEFAULT_PROVIDER)
+    setModel(PROVIDER_CONFIG[value]?.models?.[0])
   }
 
   const handleModelChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const providerModels = [...models[provider]]
     const value = (e?.target?.value ?? DEFAULT_MODEL) as Model
-    setModel(providerModels.includes(value) ? value : DEFAULT_MODEL)
+    setModel([...MODELS[provider]].includes(value) ? value : DEFAULT_MODEL)
   }
 
   const handleUpdateApiKeys = (provider: Provider, apiKey: string) => {
@@ -43,6 +43,13 @@ export default function Settings() {
     setApiKeys(keys)
   }
 
+  const handleClearChat = () => {
+    const confirmation = window?.confirm(
+      'Are you sure you want to clear chat messages?'
+    )
+    if (confirmation) onClearChat()
+  }
+
   return (
     <React.Fragment>
       <div className="text-neutral-0 flex gap-4">
@@ -51,11 +58,8 @@ export default function Settings() {
           label="Provider"
           placeholder="Choose Provider"
           value={provider}
-          options={providers?.map((provider) => ({
-            label:
-              providerDisplayNames.find(
-                (providerDisplayName) => providerDisplayName.key === provider
-              )?.displayName ?? '',
+          options={PROVIDERS?.map((provider) => ({
+            label: getProviderDisplayName(provider) ?? '',
             value: provider,
           }))}
           onChange={handleProviderChange}
@@ -65,7 +69,7 @@ export default function Settings() {
           label="Model"
           placeholder="Choose Model"
           value={model}
-          options={models?.[provider]?.map((model) => ({
+          options={MODELS?.[provider]?.map((model) => ({
             label: model,
             value: model,
           }))}
@@ -74,18 +78,18 @@ export default function Settings() {
       </div>
       <hr className="my-4 border-current text-gray-400" />
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-bold">Api Keys</h2>
+        <h2 className="text-2xl font-bold">API Keys</h2>
         <p>
           ⚠️ Do not use production API keys in these fields. They are stored in
           sessionStorage and are not encrypted or protected. Remove them when
           you are done or clear sessionStorage! ⚠️
         </p>
-        {providers?.length
-          ? providers?.map((provider) => (
+        {PROVIDERS?.length
+          ? PROVIDERS.map((provider) => (
               <div key={provider}>
                 <Input
                   id={`${provider}-api-key`}
-                  label={`${providerDisplayNames?.find((providerDisplayName) => providerDisplayName.key === provider)?.displayName} API Key`}
+                  label={`${getProviderDisplayName(provider)} API Key`}
                   value={
                     apiKeys?.find?.((apiKey) => apiKey.provider === provider)
                       ?.apiKey ?? ''
@@ -97,6 +101,13 @@ export default function Settings() {
               </div>
             ))
           : null}
+      </div>
+      <hr className="my-4 border-current text-gray-400" />
+      <div className="flex flex-col items-start gap-4">
+        <h2 className="text-2xl font-bold">Data</h2>
+        <Button variant="warning" onClick={handleClearChat}>
+          Clear Chat Messages
+        </Button>
       </div>
     </React.Fragment>
   )

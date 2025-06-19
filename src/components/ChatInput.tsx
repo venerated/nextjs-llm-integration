@@ -8,6 +8,7 @@ import Modal from '@/components/Modal'
 import Settings from '@/components/Settings'
 
 import { type UseChatHelpers } from '@ai-sdk/react'
+import type { AnnotatedMessage } from '@/types/message'
 
 export default function ChatInput({
   input,
@@ -15,6 +16,7 @@ export default function ChatInput({
   stop,
   onHandleInputChange,
   onHandleSubmit,
+  mutateMessages,
 }: {
   input: string
   status: UseChatHelpers['status']
@@ -25,6 +27,7 @@ export default function ChatInput({
       | React.ChangeEvent<HTMLTextAreaElement>
   ) => void
   onHandleSubmit: () => void
+  mutateMessages: (messages: AnnotatedMessage[]) => void
 }) {
   const formRef = useRef<HTMLFormElement>(null)
   const [showSettingsModal, setShowSettingsModal] = useState(false)
@@ -118,7 +121,7 @@ export default function ChatInput({
             Close
           </Button>
         </div>
-        <Settings />
+        <Settings onClearChat={() => mutateMessages([])} />
       </Modal>
     </div>
   )

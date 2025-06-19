@@ -1,8 +1,9 @@
+import { createProviderRegistry } from 'ai'
 import { createAnthropic } from '@ai-sdk/anthropic'
 import { createDeepSeek } from '@ai-sdk/deepseek'
 import { createOpenAI } from '@ai-sdk/openai'
-import { createProviderRegistry } from 'ai'
-import { type Provider } from '@/lib/providers'
+
+import type { Provider } from '@/types/provider'
 
 export default function createRegistry(
   apiKey: Partial<Record<Provider, string>>

@@ -1,4 +1,4 @@
-import { type Provider } from '@/lib/providers'
+import type { Provider } from '@/types/provider'
 
 export default function ProviderIcon({ provider }: { provider: Provider }) {
   return provider === 'deepseek' ? (

@@ -1,5 +1,5 @@
-import { type Model, type Provider } from '@/lib/providers'
 import { type UIMessage } from 'ai'
+import type { Model, Provider } from '@/types/provider'
 
 export type Annotations = { provider: Provider; model: Model }
 

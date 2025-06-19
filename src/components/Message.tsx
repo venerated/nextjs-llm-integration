@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 
 import MessageControls from '@/components/MessageControls'
 import Textarea from '@/components/Textarea'
 
 import { type UseChatHelpers } from '@ai-sdk/react'
-import { type AnnotatedMessage } from '@/types/message'
+import type { AnnotatedMessage } from '@/types/message'
 
 export default function Message({
   message,
@@ -85,7 +86,11 @@ export default function Message({
           message.parts.map((part, i) => {
             switch (part.type) {
               case 'text':
-                return <div key={`${message.id}-${i}`}>{part.text}</div>
+                return (
+                  <ReactMarkdown key={`${message.id}-${i}`} skipHtml>
+                    {part.text}
+                  </ReactMarkdown>
+                )
             }
           })
         )}

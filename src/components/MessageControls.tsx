@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import Button from '@/components/Button'
 import ProviderIcon from '@/components/ProviderIcon'
-import { Model, type Provider } from '@/lib/providers'
 
-import { type AnnotatedMessage } from '@/types/message'
+import type { AnnotatedMessage } from '@/types/message'
+import type { Model, Provider } from '@/types/provider'
 
 export default function MessageControls({
   onDeleteMessage,
@@ -121,7 +121,12 @@ export default function MessageControls({
 
       {role === 'assistant' ? (
         <div className="flex items-center gap-2 text-xs text-neutral-400">
-          {provider ? <ProviderIcon provider={provider} /> : null} {model}
+          {provider ? (
+            <div aria-label={provider} title={provider}>
+              <ProviderIcon provider={provider} />
+            </div>
+          ) : null}{' '}
+          {model}
         </div>
       ) : null}
     </div>

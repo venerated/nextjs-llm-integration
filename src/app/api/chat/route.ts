@@ -3,21 +3,12 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
 import createRegistry from '@/lib/registry'
+import { PROVIDERS } from '@/lib/provider'
 
-import {
-  providerConfig,
-  providers,
-  type ProviderWithKey,
-  type Provider,
-} from '@/lib/providers'
-import { type AnnotatedMessage } from '@/types/message'
+import type { AnnotatedMessage } from '@/types/message'
+import type { Provider, ProviderWithKey } from '@/types/provider'
 
-const ProviderSchema = z.enum(
-  providers as [
-    keyof typeof providerConfig,
-    ...Array<keyof typeof providerConfig>,
-  ]
-)
+const ProviderSchema = z.enum([...PROVIDERS] as [Provider, ...Provider[]])
 
 const TextUIPartSchema = z.object({
   type: z.literal('text'),

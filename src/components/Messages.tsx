@@ -3,13 +3,12 @@
 import React from 'react'
 
 import Button from '@/components/Button'
-import Message from '@/components//Message'
-import TypingIndicator from '@/components//TypingIndicator'
+import Message from '@/components/Message'
+import TypingIndicator from '@/components/TypingIndicator'
 import { useScrollToElement } from '@/hooks/useScrollToElement'
 
-import { type UIMessage } from 'ai'
 import { type UseChatHelpers } from '@ai-sdk/react'
-import { type AnnotatedMessage } from '@/types/message'
+import type { AnnotatedMessage } from '@/types/message'
 
 export default function Messages({
   error,
@@ -39,7 +38,7 @@ export default function Messages({
         m.id === id
           ? {
               ...m,
-              parts: [{ type: 'text', text: newText }] as UIMessage['parts'],
+              parts: [{ type: 'text', text: newText }],
             }
           : m
       )
@@ -51,7 +50,7 @@ export default function Messages({
     <div className="grow basis-auto flex-col overflow-hidden">
       <div className="h-full">
         <div ref={containerRef} className="h-full overflow-y-auto pb-10">
-          <div className="m-auto flex h-auto w-full flex-col gap-4 px-4 pt-8 sm:w-75/100">
+          <div className="m-auto flex h-auto w-full max-w-[75ch] flex-col gap-4 px-4 pt-8 sm:w-75/100">
             {messages.map((message: AnnotatedMessage) => (
               <Message
                 key={message.id}
