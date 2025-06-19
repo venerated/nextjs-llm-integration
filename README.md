@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nextjs-llm-integration
 
-## Getting Started
+This is a demo repo for a client-side chat app that allows using different providers/models for the LLM.
+
+The app currently supports the following providers/models:
+
+- anthropic:claude-3-5-haiku-20241022
+- deepseek:deepseek-chat
+- openai:gpt-4o
+
+---
+
+⚠️ This repo is not meant to be used in a production environment in its current state. ⚠️
+
+---
+
+## Requirements
+
+- Node v22.x
+- yarn v4.9.2
+
+## Installation
+
+Note: No .env is necessary. Keys are handled under Settings in the browser.
+
+1. `yarn install` to install dependencies.
+
+## Scripts
 
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn dev # Start local dev server
+yarn build # Build for production
+yarn start # Start production server
+yarn lint # Run ESLint
+yarn type-check # Run TypeScript type checker
 ```
+
+## Running the App
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Settings
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Once the app is running, open it in the browser and click on Settings (Gear Icon).
+- This is where you can choose the provider and model you'd like to use and enter API keys.
 
-## Learn More
+⚠️ Clear sessionStorage after using the demo to protect API keys! ⚠️
 
-To learn more about Next.js, take a look at the following resources:
+## Changes I Would Make for Production
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Security
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Add user authentication
+- Store API keys in a database
 
-## Deploy on Vercel
+## Validation & Error Handling
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Exhaustively handle different errors and error shapes from various providers
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## UX & Performance
+
+- Add logic around rate limits
+- Track token usage and validate payload token count
+- Virtualize long message lists
+- Move all saved state, like messages, from sessionStorage to database
+
+## Testing & DevEx
+
+- Add unit and E2E testing
+- Add exhaustive documentation
