@@ -109,6 +109,7 @@ export async function POST(req: Request) {
             'statusCode' in e &&
             'responseBody' in e
           ) {
+            /* eslint-disable  @typescript-eslint/no-explicit-any */
             const status = (e as any).statusCode ?? 500
             const body = (e as any).responseBody ?? 'Unknown response body'
             return `${status} — ${body}`
